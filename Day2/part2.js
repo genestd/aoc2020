@@ -1,12 +1,5 @@
 const input = require('./input')
-
-// Takes a string input, splits on newline, returns trimmed array
-const parseInput = (input) => {
-    if (typeof input !== 'string') {
-        throw new Error('Invalid input - must be string')
-    }
-    return input.split(String.fromCharCode(10)).map(item => item.trim())
-}
+const parseInput = require('../utils').parseInput
 
 const validatePassword = (password, letter, pos1, pos2) => {
     const check1 = password.trim().charAt(pos1 - 1)
