@@ -1,6 +1,6 @@
 const { test, expect, it } = require('@jest/globals')
 
-const parseInput = require('./part1').parseInput
+const parseInput = require('../utils').parseInput
 const checkPassword = require('./part1').checkPassword
 
 it('should throw an error when input is not array', () => {
