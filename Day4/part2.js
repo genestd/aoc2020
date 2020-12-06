@@ -81,17 +81,13 @@ const validatePassportId = (id='') => {
 const validatePassport = (passportTokens) => {
     const keys = Object.keys(passportTokens)
     if (keys.length >= 7) {
-        const vby = validateBirthYear(passportTokens.byr)
-        const viy = validateIssueYear(passportTokens.iyr)
-        const vey = validateExpirationYear(passportTokens.eyr)
-        const vh = validateHeight(passportTokens.hgt)
-        const vhc = validateHairColor(passportTokens.hcl)
-        const vec = validateEyeColor(passportTokens.ecl)
-        const vpi = validatePassportId(passportTokens.pid)
-        console.log({
-            vby, viy, vey, vh, vhc, vec, vpi
-        })
-        if (vby && viy && vey && vh && vhc && vec && vpi) {
+        if (validateBirthYear(passportTokens.byr) &&
+        validateIssueYear(passportTokens.iyr) &&
+        validateExpirationYear(passportTokens.eyr) &&
+        validateHeight(passportTokens.hgt) &&
+        validateHairColor(passportTokens.hcl) &&
+        validateEyeColor(passportTokens.ecl) &&
+        validatePassportId(passportTokens.pid)) {
             return true
         }
         return false

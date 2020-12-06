@@ -180,7 +180,7 @@ pid:3556412378 byr:2007`
     let validCount = 0
     data.forEach(rec => {
         const tokens = tokenizePassport(rec)
-        console.log(tokens)
+        // console.log(tokens)
         if (validatePassport(tokens)) {
             validCount++
         }
