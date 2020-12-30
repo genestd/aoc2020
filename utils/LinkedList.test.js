@@ -43,7 +43,6 @@ describe('Linked List tests', () => {
     })
     it('tests insert', () => {
         ll2.insert(1, [3,4])
-        console.log(ll2)
         expect(ll2.length).toBe(4)
         const result = ll2.get(1)
         expect(result).toEqual({
