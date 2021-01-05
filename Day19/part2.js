@@ -1,88 +1,40 @@
-const input = require('./input')
-const { parseInput } = require('../utils')
-const { sub } = require('./input')
+console.log('Start');
+testInput = $('pre').innerText.trimEnd();
+var input = testInput.split('\n\n').map(a => a.split('\n'));
+var messages = input[1];
+var rules = [];
+input[0].forEach(a=>rules[a.split(': ')[0]] = a.split(': ')[1]);
+rules = rules.map(a=>a.replaceAll('"',''));
 
-// const normalizeRules = (rules, rule) => {
-//     rule = rule.replace(/"/g, '')
-//     const [id, r] = rule.split(': ')
-//     const [first, second] = r.split(' | ')
-//     rules[id] = {
-//         group1: first.split(' '),
-//         group2: (second || '').split(' ').filter(item => item !== '')
-//     }
-//     return rules
-// }
-const normalizeRules = (rules, rule) => {
-    rule = rule.replace(/"/g, '')
-    const [id, r] = rule.split(': ')
-    //const [first, second] = r.split(' | ')
-    rules[id] = r
-    return rules
-}
-
-const buildRuleList = (rules, rule='0') => {
-    //console.log({ rule })
-    if (rules[rule] === 'a' || rules[rule] === 'b') {
-        return rules[rule]
+function expandAll(str) {
+    while (str.match(/\d/)) {
+        let expList = (str.match(/(?<!\d)\d+(?!\d)/g) || []);
+        expList = expList.filter((a,i,ar)=>ar.findIndex(b=>b==a)==i);
+        expList.forEach((exp)=>{
+            str = str.replaceAll(new RegExp(`(?<!\\d)${exp}(?!\\d)`, 'g'), (rules[exp].includes('|')?(`(${rules[exp]})`):rules[exp]));
+        });
     }
-    const ruleList = rules[rule].split(' | ')
-    let group1 = ruleList[0].split(' ')
-    let val = ''
-    for (let subrule of group1) {
-        let nextVal = buildRuleList(rules, subrule)
-        if (nextVal.indexOf(',') > -1) {
-            //console.log(`NextVal: ${nextVal}, Val: ${val}`)
-            val = nextVal.split(',').map(v => val.split(',').map(nv => nv + v).join(',')).join(',')
-            //console.log(`Val: ${val}`)
-        } else {
-            val = val.split(',').map(v => v + nextVal).join(',')
-        }
-    }
-    //console.log(`Rule ${rule}, group1 val = ${val}`)
-
-    if (ruleList[1]) {
-        let group2 = ruleList[1].split(' ')
-        let val2 = ''
-        for (let subrule of group2) {
-            let nextVal = buildRuleList(rules, subrule)
-            if (nextVal.indexOf(',') > -1) {
-                val2 = nextVal.split(',').map(v => val2.split(',').map(nv => nv + v).join(',')).join(',')
-            } else {
-                val2 = val2.split(',').map(v => v + nextVal).join(',')
-            }
-        }
-        //console.log(`Rule ${rule} val = ${val},${val2}`)
-    
-        //console.log(val, val2)
-        return val + ',' + val2
-    }
-    //console.log(`Rule ${rule} val = ${val}`)
-    return val
+    return str.replaceAll(' ', '');
 }
 
-const main = () => {
-    const [r, i] = parseInput(input, `${String.fromCharCode(10)}${String.fromCharCode(10)}`)
-    const rules = parseInput(r).reduce(normalizeRules, {})
-    const images = parseInput(i)
-    
-    let list = buildRuleList(rules)
-    list = list.split(',').reduce((total, rule) => {
-        total[rule] = true
-        return total
-    }, {})
+// 0: 8 11
+// 8: 42
+// 11: 42 31
+// 0:= 42{2} 31
+var rule42 = expandAll('42');
+console.log('Expanded 42');
+var rule31 = expandAll('31');
+console.log('Expanded 31');
+var loopRule = new RegExp(`^${rule42}{2}${rule31}$`);
+console.log(`Answer 1: ${messages.filter(a=>loopRule.test(a)).length}`);
 
-    let counter = 0
-    images.forEach(image => {
-        if (list[image]) {
-            counter++
-        }
-    })
-    console.log(`${counter} images match`)
+// 0: 8 11
+// 8: 42 | 42 8
+// 11: 42 31 | 42 11 31
+// 0:= 42+ 42{i} 31{i}
+var valid = [];
+for (let i=1; i<5; i++) {
+    loopRule = new RegExp(`^${rule42}+${rule42}{${i}}${rule31}{${i}}$`);
+    valid.push(...messages.filter(a=>!valid.includes(a)&&loopRule.test(a)));
 }
-
-//main()
-
-module.exports = {
-    buildRuleList,
-    normalizeRules,
-}
+console.log(`Answer 2: ${valid.length}`);

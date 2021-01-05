@@ -79,7 +79,7 @@ const main = () => {
     console.log(`${counter} images match`)
 }
 
-//main()
+main()
 
 module.exports = {
     buildRuleList,

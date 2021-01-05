@@ -20,6 +20,9 @@
     "jest": "^26.6.3"
   },
   "dependencies": {
+    "colors": "^1.4.0",
+    "generatorics": "^1.1.0",
+    "lodash": "^4.17.20",
     "md5": "^2.3.0"
   }
 }
